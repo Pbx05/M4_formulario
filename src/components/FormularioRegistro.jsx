@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { esquemaRegistro } from '../schemas/participanteSchema'
-import { crearParticipante } from '../services/participantes'
+import { esquemaRegistro } from '../schemas/jugadorSchema'
+import { crearJugador } from '../services/jugadores'
 
 export default function FormularioRegistro() {
   const queryClient = useQueryClient()
@@ -18,19 +18,19 @@ export default function FormularioRegistro() {
       nombre: '',
       email: '',
       edad: '',
-      rol: '',
+      posicion: '',
       password: '',
       repetirPassword: '',
-      aceptaTerminos: false,
+      aceptaReglamento: false,
     },
   })
 
   const mutacion = useMutation({
-    mutationFn: crearParticipante,
+    mutationFn: crearJugador,
     onSuccess: () => {
-      reset() // Limpia el formulario tras crear correctamente
+      reset() // Limpia el formulario tras completar la inscripción
       // Invalidamos la query para refrescar la lista automáticamente
-      queryClient.invalidateQueries({ queryKey: ['participantes'] })
+      queryClient.invalidateQueries({ queryKey: ['jugadores'] })
     },
   })
 
@@ -52,7 +52,7 @@ export default function FormularioRegistro() {
       {/* Feedback de éxito accesible con role="status" */}
       {mutacion.isSuccess && (
         <p role="status" className="ok">
-          ¡Participante registrado con éxito!
+          ¡Jugador inscrito en el torneo con éxito!
         </p>
       )}
 
@@ -63,7 +63,7 @@ export default function FormularioRegistro() {
           id="nombre"
           type="text"
           autoComplete="name"
-          placeholder="Ej. Ada Lovelace"
+          placeholder="Ej. Iker Casillas"
           aria-invalid={!!errors.nombre}
           aria-describedby={errors.nombre ? 'error-nombre' : undefined}
           {...register('nombre')}
@@ -82,7 +82,7 @@ export default function FormularioRegistro() {
           id="email"
           type="email"
           autoComplete="email"
-          placeholder="ada@ejemplo.com"
+          placeholder="jugador@ejemplo.com"
           aria-invalid={!!errors.email}
           aria-describedby={errors.email ? 'error-email' : undefined}
           {...register('email')}
@@ -101,7 +101,7 @@ export default function FormularioRegistro() {
           id="edad"
           type="number"
           min="0"
-          placeholder="Mínimo 18 años"
+          placeholder="Entre 16 y 65 años"
           aria-invalid={!!errors.edad}
           aria-describedby={errors.edad ? 'error-edad' : undefined}
           {...register('edad')}
@@ -113,32 +113,31 @@ export default function FormularioRegistro() {
         )}
       </div>
 
-      {/* Campo: Perfil técnico (select) */}
+      {/* Campo: Posición en el campo (select) */}
       <div className="campo">
-        <label htmlFor="rol">Perfil técnico</label>
+        <label htmlFor="posicion">Posición</label>
         <select
-          id="rol"
-          aria-invalid={!!errors.rol}
-          aria-describedby={errors.rol ? 'error-rol' : undefined}
-          {...register('rol')}
+          id="posicion"
+          aria-invalid={!!errors.posicion}
+          aria-describedby={errors.posicion ? 'error-posicion' : undefined}
+          {...register('posicion')}
         >
-          <option value="">-- Selecciona una especialidad --</option>
-          <option value="Frontend">Frontend Developer</option>
-          <option value="Backend">Backend Developer</option>
-          <option value="Fullstack">Fullstack Developer</option>
-          <option value="Mobile">Mobile Developer</option>
-          <option value="DevOps">DevOps / Cloud Engineer</option>
+          <option value="">-- Selecciona una posición --</option>
+          <option value="Portero">Portero</option>
+          <option value="Defensa">Defensa</option>
+          <option value="Centrocampista">Centrocampista</option>
+          <option value="Delantero">Delantero</option>
         </select>
-        {errors.rol && (
-          <p id="error-rol" role="alert" className="error">
-            {errors.rol.message}
+        {errors.posicion && (
+          <p id="error-posicion" role="alert" className="error">
+            {errors.posicion.message}
           </p>
         )}
       </div>
 
       {/* Campo: Contraseña con dependencia cruzada */}
       <div className="campo">
-        <label htmlFor="password">Contraseña</label>
+        <label htmlFor="password">Contraseña de acceso</label>
         <input
           id="password"
           type="password"
@@ -172,28 +171,28 @@ export default function FormularioRegistro() {
         )}
       </div>
 
-      {/* Campo: Términos y condiciones (checkbox obligatorio) */}
+      {/* Campo: Reglamento del torneo (checkbox obligatorio) */}
       <div className="campo-checkbox">
         <input
-          id="aceptaTerminos"
+          id="aceptaReglamento"
           type="checkbox"
-          aria-invalid={!!errors.aceptaTerminos}
-          aria-describedby={errors.aceptaTerminos ? 'error-aceptaTerminos' : undefined}
-          {...register('aceptaTerminos')}
+          aria-invalid={!!errors.aceptaReglamento}
+          aria-describedby={errors.aceptaReglamento ? 'error-aceptaReglamento' : undefined}
+          {...register('aceptaReglamento')}
         />
-        <label htmlFor="aceptaTerminos">
-          Acepto los términos del evento y la política de privacidad
+        <label htmlFor="aceptaReglamento">
+          Acepto el reglamento oficial del torneo de fútbol
         </label>
       </div>
-      {errors.aceptaTerminos && (
-        <p id="error-aceptaTerminos" role="alert" className="error">
-          {errors.aceptaTerminos.message}
+      {errors.aceptaReglamento && (
+        <p id="error-aceptaReglamento" role="alert" className="error">
+          {errors.aceptaReglamento.message}
         </p>
       )}
 
       {/* Botón de envío deshabilitado durante el envío para evitar dobles envíos */}
       <button type="submit" disabled={bloqueado}>
-        {bloqueado ? 'Registrando participante…' : 'Completar registro'}
+        {bloqueado ? 'Inscribiendo jugador…' : 'Inscribirse en el torneo'}
       </button>
     </form>
   )

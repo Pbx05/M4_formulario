@@ -1,16 +1,16 @@
 import { useQuery } from '@tanstack/react-query'
-import { obtenerParticipantes } from '../services/participantes'
+import { obtenerJugadores } from '../services/jugadores'
 
-export default function ListaParticipantes() {
+export default function ListaJugadores() {
   const { data, isPending, isError, error, isFetching, refetch } = useQuery({
-    queryKey: ['participantes'],
-    queryFn: obtenerParticipantes,
+    queryKey: ['jugadores'],
+    queryFn: obtenerJugadores,
   })
 
   if (isPending) {
     return (
       <p role="status" className="estado-mensaje">
-        Cargando participantes…
+        Cargando jugadores…
       </p>
     )
   }
@@ -18,7 +18,7 @@ export default function ListaParticipantes() {
   if (isError) {
     return (
       <div role="alert" className="alerta-error">
-        <p className="error-texto">Error al cargar participantes: {error.message}</p>
+        <p className="error-texto">Error al cargar jugadores: {error.message}</p>
         <button type="button" className="boton-secundario" onClick={() => refetch()}>
           Reintentar
         </button>
@@ -27,7 +27,7 @@ export default function ListaParticipantes() {
   }
 
   if (data.length === 0) {
-    return <p className="estado-mensaje">No hay participantes registrados todavía.</p>
+    return <p className="estado-mensaje">No hay jugadores inscritos todavía.</p>
   }
 
   // Valor derivado directamente en el render (sin estado redundante)
@@ -36,7 +36,7 @@ export default function ListaParticipantes() {
   return (
     <div>
       <p className="resumen-lista">
-        Total registrados: <strong>{total}</strong>
+        Jugadores inscritos: <strong>{total}</strong>
         {isFetching && (
           <span role="status" className="estado-actualizando">
             {' '}
@@ -46,13 +46,13 @@ export default function ListaParticipantes() {
       </p>
 
       <ul className="lista-usuarios">
-        {data.map((participante) => (
-          <li key={participante.id} className="usuario-item">
+        {data.map((jugador) => (
+          <li key={jugador.id} className="usuario-item">
             <div className="usuario-cabecera">
-              <p className="usuario-nombre">{participante.nombre}</p>
-              <span className="usuario-badge">{participante.rol}</span>
+              <p className="usuario-nombre">{jugador.nombre}</p>
+              <span className="usuario-badge">{jugador.posicion}</span>
             </div>
-            <p className="usuario-email">{participante.email}</p>
+            <p className="usuario-email">{jugador.email}</p>
           </li>
         ))}
       </ul>
