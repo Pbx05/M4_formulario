@@ -1,13 +1,12 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { esquemaRegistro } from '../schemas/participanteSchema'
+import { crearParticipante } from '../services/participantes'
 
-export default function FormularioRegistro({
-  onRegistrar,
-  isPending = false,
-  errorServidor = null,
-  isSuccess = false,
-}) {
+export default function FormularioRegistro() {
+  const queryClient = useQueryClient()
+
   const {
     register,
     handleSubmit,
@@ -26,26 +25,32 @@ export default function FormularioRegistro({
     },
   })
 
-  async function onSubmit(datos) {
-    if (onRegistrar) {
-      await onRegistrar(datos)
-      reset() // Limpia los campos tras completar el registro (sección 5 del temario)
-    }
+  const mutacion = useMutation({
+    mutationFn: crearParticipante,
+    onSuccess: () => {
+      reset() // Limpia el formulario tras crear correctamente
+      // Invalidamos la query para refrescar la lista automáticamente
+      queryClient.invalidateQueries({ queryKey: ['participantes'] })
+    },
+  })
+
+  function onSubmit(datos) {
+    mutacion.mutate(datos)
   }
 
-  const bloqueado = isSubmitting || isPending
+  const bloqueado = isSubmitting || mutacion.isPending
 
   return (
     <form className="formulario" onSubmit={handleSubmit(onSubmit)} noValidate>
-      {/* Feedback de error del servidor */}
-      {errorServidor && (
+      {/* Feedback de error global / servidor con role="alert" */}
+      {mutacion.isError && (
         <p role="alert" className="alerta-error">
-          {errorServidor}
+          {mutacion.error.message}
         </p>
       )}
 
-      {/* Feedback de éxito accesible con role="status" (sección 4 del temario) */}
-      {isSuccess && (
+      {/* Feedback de éxito accesible con role="status" */}
+      {mutacion.isSuccess && (
         <p role="status" className="ok">
           ¡Participante registrado con éxito!
         </p>
@@ -193,4 +198,3 @@ export default function FormularioRegistro({
     </form>
   )
 }
-

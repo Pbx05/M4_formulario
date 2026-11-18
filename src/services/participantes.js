@@ -61,10 +61,11 @@ export async function crearParticipante(datos) {
     throw new Error('No se pudo registrar el participante en el servidor')
   }
 
-  const nuevoEnServidor = await respuesta.json()
+  await respuesta.json()
 
+  // JSONPlaceholder devuelve siempre id 11; usamos Date.now() para garantizar key única
   const participante = {
-    id: nuevoEnServidor.id || Date.now(),
+    id: Date.now(),
     nombre: datos.nombre,
     email: datos.email,
     rol: datos.rol,
