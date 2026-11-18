@@ -177,9 +177,40 @@ button:hover:not(:disabled) {
   background-color: var(--color-primary-hover);
 }
 
+button:focus-visible,
+.campo-checkbox input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.boton-secundario {
+  margin-top: 8px;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  background-color: var(--color-error);
+}
+
+.boton-secundario:hover:not(:disabled) {
+  background-color: #b91c1c;
+}
+
+.error-texto {
+  margin: 0;
+}
+
+.resumen-lista {
+  margin: 0 0 12px 0;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.estado-actualizando {
+  font-style: italic;
 }
 
 /* Listado de usuarios */

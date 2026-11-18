@@ -1,10 +1,7 @@
 import FormularioRegistro from './components/FormularioRegistro'
+import ListaParticipantes from './components/ListaParticipantes'
 
 function App() {
-  function manejarRegistroPrueba(datos) {
-    console.log('Datos del formulario validados con Zod:', datos)
-  }
-
   return (
     <div className="contenedor">
       <header>
@@ -15,16 +12,14 @@ function App() {
       </header>
 
       <main className="grid">
-        <section className="tarjeta">
-          <h2>Nuevo Participante</h2>
-          <FormularioRegistro onRegistrar={manejarRegistroPrueba} />
+        <section className="tarjeta" aria-labelledby="titulo-formulario">
+          <h2 id="titulo-formulario">Nuevo Participante</h2>
+          <FormularioRegistro />
         </section>
 
-        <section className="tarjeta">
-          <h2>Participantes Registrados</h2>
-          <p className="estado-mensaje">
-            Conectando datos remotos con useQuery en el Paso 4...
-          </p>
+        <section className="tarjeta" aria-labelledby="titulo-listado">
+          <h2 id="titulo-listado">Participantes Registrados</h2>
+          <ListaParticipantes />
         </section>
       </main>
     </div>

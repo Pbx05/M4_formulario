@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { obtenerParticipantes } from '../services/participantes'
 
 export default function ListaParticipantes() {
-  const { data, isPending, isError, error, isFetching } = useQuery({
+  const { data, isPending, isError, error, isFetching, refetch } = useQuery({
     queryKey: ['participantes'],
     queryFn: obtenerParticipantes,
   })
@@ -17,9 +17,12 @@ export default function ListaParticipantes() {
 
   if (isError) {
     return (
-      <p role="alert" className="alerta-error">
-        Error al cargar participantes: {error.message}
-      </p>
+      <div role="alert" className="alerta-error">
+        <p className="error-texto">Error al cargar participantes: {error.message}</p>
+        <button type="button" className="boton-secundario" onClick={() => refetch()}>
+          Reintentar
+        </button>
+      </div>
     )
   }
 
@@ -27,13 +30,20 @@ export default function ListaParticipantes() {
     return <p className="estado-mensaje">No hay participantes registrados todavía.</p>
   }
 
+  // Valor derivado directamente en el render (sin estado redundante)
+  const total = data.length
+
   return (
     <div>
-      {isFetching && (
-        <p role="status" className="estado-mensaje">
-          Actualizando listado…
-        </p>
-      )}
+      <p className="resumen-lista">
+        Total registrados: <strong>{total}</strong>
+        {isFetching && (
+          <span role="status" className="estado-actualizando">
+            {' '}
+            · Actualizando…
+          </span>
+        )}
+      </p>
 
       <ul className="lista-usuarios">
         {data.map((participante) => (
@@ -49,4 +59,3 @@ export default function ListaParticipantes() {
     </div>
   )
 }
-
